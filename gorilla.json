@@ -6,7 +6,7 @@
 	"author": "Mikarific",
 	"description": "A script that adds various useful features to Infinite Craft.",
 	"icon": "https://i.imgur.com/WlkWOkU.png",
-	"grant": ["GM.getValue", "GM.setValue", "GM.xmlHttpRequest", "unsafeWindow"],
+	"grant": ["GM.getValue", "GM.setValue", "GM.xmlHttpRequest", "GM.setClipboard", "unsafeWindow"],
 	"downloadURL": "https://github.com/Mikarific/InfiniteCraftHelper/raw/main/dist/InfiniteCraftHelper.user.js",
 	"updateURL": "https://github.com/Mikarific/InfiniteCraftHelper/raw/main/dist/InfiniteCraftHelper.user.js"
 }

@@ -72,7 +72,17 @@ export function openCraftsForElement(element: { text: string; emoji?: string }) 
 	titleEmoji.classList.add('display-item-emoji');
 	titleEmoji.appendChild(document.createTextNode(element.emoji ?? '⬜'));
 	craftsTitle.appendChild(titleEmoji);
-	craftsTitle.appendChild(document.createTextNode(` ${element.text} `));
+    
+	const elementTitle = document.createElement('span');
+	elementTitle.classList.add('modal-title-text');
+
+	elementTitle.appendChild(document.createTextNode(` ${element.text} `));
+
+    elementTitle.addEventListener("click", () => {
+        GM.setClipboard(element.text)
+      });
+    
+    craftsTitle.appendChild(elementTitle);
 
 	craftsContainer.innerHTML = '';
 	const elementRecipes = recipes[element.text];

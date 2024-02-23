@@ -233,6 +233,18 @@ const css = `
         user-select: none;
     }
 
+    .modal-title-text {
+        cursor: pointer;
+    }
+
+    .modal-title-text:hover {
+        opacity: 0.8;
+    }
+
+	.modal-title-text:active {
+        opacity: 0.6;
+    }
+
     .modal-empty {
         font-size: 15px;
         font-family: Roboto, sans-serif;
