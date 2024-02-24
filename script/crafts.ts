@@ -1,6 +1,9 @@
 import type { elements } from './index';
 
 import { closeIcon } from './lib/assets';
+import { unpinElement } from './pinned'
+
+declare const unsafeWindow: any;
 
 const craftsModal = document.createElement('dialog');
 const craftsTitle = document.createElement('h1');
@@ -63,6 +66,26 @@ export async function addElementToCrafts(
 			emoji: ingredients[1].emoji ?? '⬜',
 		},
 	]);
+	await GM.setValue('recipes', JSON.stringify(recipes));
+}
+
+export async function removeElementFromCrafts(
+	element: { text: string; emoji?: string; discovered: boolean }
+) {
+	unsafeWindow.$nuxt.$root.$children[2].$children[0].$children[0]._data.deleteSound.play();
+
+	const elements = [...unsafeWindow.$nuxt.$root.$children[2].$children[0].$children[0]._data.elements];
+	let saveDataElements = [...JSON.parse(localStorage.getItem('infinite-craft-data') ?? '').elements];
+
+	saveDataElements = saveDataElements.filter((el) => el.text !== element.text)
+	localStorage.setItem('infinite-craft-data', JSON.stringify({
+		elements: saveDataElements,
+	}));
+
+	unsafeWindow.$nuxt.$root.$children[2].$children[0].$children[0]._data.elements = elements.filter((el) => el.text !== element.text);
+	delete recipes[element.text]
+	unpinElement(element)
+	
 	await GM.setValue('recipes', JSON.stringify(recipes));
 }
 

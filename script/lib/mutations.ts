@@ -4,7 +4,7 @@ import { setMiddleClickOnMutations } from '../copy';
 import { addElementToDiscoveries } from '../discoveries';
 import { contributeToDatabase } from '../settings';
 import { pinElement, resetPinnedElements } from '../pinned';
-import { addElementToCrafts, openCraftsForElement, resetCrafts } from '../crafts';
+import { addElementToCrafts, removeElementFromCrafts, openCraftsForElement, resetCrafts } from '../crafts';
 
 declare const GM: any;
 declare const unsafeWindow: any;
@@ -95,8 +95,12 @@ export function init(elements: elements) {
 				openCraftsForElement(element);
 				return;
 			}
-			if (e.altKey) {
+			if (e.altKey && !e.shiftKey) {
 				pinElement(element);
+				return;
+			}
+			if (e.altKey && e.shiftKey) {
+				removeElementFromCrafts(element);
 				return;
 			}
 			return selectElement(e, element);

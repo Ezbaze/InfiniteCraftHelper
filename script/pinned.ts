@@ -57,15 +57,22 @@ export async function pinElement(element: { text: string; emoji?: string; discov
 		await GM.setValue('pinned', JSON.stringify(pinnedElements));
 	} else {
 		unsafeWindow.$nuxt.$root.$children[2].$children[0].$children[0]._data.deleteSound.play();
-		const elementDiv = Array.from(pinnedContainer.querySelectorAll('.item')).find(
-			(el) => el.childNodes[1].textContent?.trim() === element.text,
-		);
-		elementDiv?.remove();
-		if (pinnedElements.length === 1) pinnedContainer.style.display = 'none';
-		pinnedElements = pinnedElements.filter((el) => el !== element);
-		await GM.setValue('pinned', JSON.stringify(pinnedElements));
+		unpinElement(element)
 	}
 }
+
+export async function unpinElement(element: { text: string; emoji?: string; discovered: boolean }) {
+	
+	const elementDiv = Array.from(pinnedContainer.querySelectorAll('.item')).find(
+		(el) => el.childNodes[1].textContent?.trim() === element.text,
+	);
+	elementDiv?.remove();
+	if (pinnedElements.length === 1) pinnedContainer.style.display = 'none';
+	pinnedElements = pinnedElements.filter((el) => el !== element);
+	await GM.setValue('pinned', JSON.stringify(pinnedElements));
+
+}
+
 export async function resetPinnedElements() {
 	pinnedContainer.innerHTML = '';
 	pinnedContainer.appendChild(pinnedTitle);
