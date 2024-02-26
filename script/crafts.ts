@@ -24,10 +24,15 @@ export async function init(elements: elements) {
 	craftsTitle.appendChild(document.createTextNode('Crafts'));
 	craftsHeader.appendChild(craftsTitle);
 
+	const closeButtonContainer = document.createElement('div');
+	closeButtonContainer.classList.add('close-button-container');
+
 	const closeButton = document.createElement('img');
 	closeButton.src = closeIcon.trim();
 	closeButton.classList.add('close-button');
-	craftsHeader.appendChild(closeButton);
+	closeButtonContainer.appendChild(closeButton);
+
+	craftsHeader.appendChild(closeButtonContainer);
 
 	craftsModal.appendChild(craftsHeader);
 
@@ -35,6 +40,21 @@ export async function init(elements: elements) {
 	craftsModal.appendChild(craftsContainer);
 
 	recipes = JSON.parse(((await GM.getValue('recipes')) as string) ?? '{}');
+	delete recipes['Nothing'];
+	for (const recipeKey of Object.keys(recipes)) {
+		for (let i = recipes[recipeKey].length - 1; i >= 0; i--) {
+			if (
+				recipes[recipeKey][i] === undefined ||
+				recipes[recipeKey][i] === null ||
+				recipes[recipeKey][i].length < 2 ||
+				recipes[recipeKey][i][0].text === recipeKey ||
+				recipes[recipeKey][i][1].text === recipeKey
+			) {
+				recipes[recipeKey].splice(i, 1);
+			}
+		}
+	}
+	await GM.setValue('recipes', JSON.stringify(recipes));
 
 	closeButton.addEventListener('click', (e) => {
 		craftsModal.close();
@@ -45,6 +65,7 @@ export async function addElementToCrafts(
 	first: { text: string; emoji?: string },
 	second: { text: string; emoji?: string },
 	result: string,
+	loading = false,
 ) {
 	const ingredients = [first, second].sort((a, b) => {
 		return a.text.localeCompare(b.text);
@@ -66,7 +87,7 @@ export async function addElementToCrafts(
 			emoji: ingredients[1].emoji ?? '⬜',
 		},
 	]);
-	await GM.setValue('recipes', JSON.stringify(recipes));
+	if (!loading) await GM.setValue('recipes', JSON.stringify(recipes));
 }
 
 export async function removeElementFromCrafts(
@@ -101,7 +122,7 @@ export function openCraftsForElement(element: { text: string; emoji?: string }) 
 	const elementRecipes = recipes[element.text];
 	if (elementRecipes === undefined) {
 		const recipesEmpty = document.createElement('div');
-		recipesEmpty.classList.add('modal-empty');
+		recipesEmpty.classList.add('modal-text');
 		recipesEmpty.appendChild(document.createTextNode("I don't know how to craft this element!"));
 		craftsContainer.appendChild(recipesEmpty);
 	} else {
